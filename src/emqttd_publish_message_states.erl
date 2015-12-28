@@ -93,30 +93,42 @@ on_message_publish(Message, _Env) ->
 
 on_message_acked(ClientId, Message, _Env) ->
     io:format("client ~s acked ~s", [ClientId, emqttd_message:format(Message)]),
-    publishMsgAck(Message).
+    publishMsgAck(ClientId,Message).
 
 
-%%get the msg source and topic details and publish it on a channel with QoS = 0 (for now)
-publishMsgAck(#mqtt_message{msgid = MsgId, pktid = PktId, from = From,
-  qos = Qos, retain = Retain, dup = Dup, topic =Topic, payload = Payload}) ->
+%%get the msg source and topic details and publish it on a channel with QoS = 1
+publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
+  qos = Qos, retain = Retain, dup = Dup, topic =Topic, payload = Payload, timestamp = Timestamp}) ->
 
-  %%decode the json and get the details embedded by msg producer
-  Struct = mochijson2:decode(Payload),
-  ProductId = proplists:get_value(<<"product_id">>, Struct#struct.lst),
-  MessageId = proplists:get_value(<<"message_id">>, Struct#struct.lst),
+  try
+    %%decode the json and get the details embedded by msg producer
+    Struct = mochijson2:decode(Payload),
+    ProductId = proplists:get_value(<<"product_id">>, Struct#struct.lst),
+    MessageId = proplists:get_value(<<"message_id">>, Struct#struct.lst),
 
-  %% build json to send using product_id and message_id taken from message ack
-  Json = mochijson2:encode([
-    {client_id, From},
-    {product_id, ProductId},
-    {message_id, MessageId},
-    {topic,Topic}
-  ]),
+    %% build json to send using product_id and message_id taken from message ack
+    Json = mochijson2:encode([
+      {pub_client_id, From},
+      {ack_client_id, ClientId},
+      {product_id, ProductId},
+      {message_id, MessageId},
+      {topic,Topic}
+    ]),
 
-  %%build emqttd message with Qos = 0 and then publish
-  Msg = emqttd_message:make("broker", 0, list_to_binary("SYSTEM/msgack"), list_to_binary(Json)),
-  emqttd_pubsub:publish(Msg).
+    case From of
+      <<"broker">> ->
+        io:fwrite("from broker");
+      _Else ->
+        io:fwrite("nofrom broker"),
 
+        %%build emqttd message with Qos = 1 and then publish
+        Msg = emqttd_message:make(<<"broker">>, 1, list_to_binary("SYSTEM/msgack"), list_to_binary(Json)),
+        emqttd_pubsub:publish(Msg)
+    end
+
+  catch
+    _:_ -> io:fwrite("not json")
+  end.
 
 %% Called when the plugin application stop
 onunload() ->
