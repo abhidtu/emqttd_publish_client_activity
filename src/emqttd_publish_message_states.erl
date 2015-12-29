@@ -98,7 +98,7 @@ on_message_acked(ClientId, Message, _Env) ->
 
 %%get the msg source and topic details and publish it on a channel with QoS = 1
 publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
-  qos = Qos, retain = Retain, dup = Dup, topic =Topic, payload = Payload, timestamp = Timestamp}) ->
+  qos = QoS, retain = Retain, dup = Dup, topic =Topic, payload = Payload, timestamp = Timestamp}) ->
 
   try
     %%decode the json and get the details embedded by msg producer
@@ -117,13 +117,22 @@ publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
 
     case From of
       <<"broker">> ->
-        io:fwrite("from broker");
-      _Else ->
-        io:fwrite("nofrom broker"),
+        io:format("publish from broker");
+      _ ->
 
-        %%build emqttd message with Qos = 1 and then publish
-        Msg = emqttd_message:make(<<"broker">>, 1, list_to_binary("SYSTEM/msgack"), list_to_binary(Json)),
-        emqttd_pubsub:publish(Msg)
+        if ProductId =/= undefined, MessageId =/= undefined ->
+
+          %%build emqttd message with Qos = 1 and then publish
+          Msg = emqttd_message:make(<<"broker">>, 1, list_to_binary("SYSTEM/msgack"), list_to_binary(Json)),
+          emqttd_pubsub:publish(Msg);
+
+          true ->
+            io:format(" product id or message id not defined ")
+
+        end,
+
+        io:format("publish not from broker")
+
     end
 
   catch
