@@ -83,18 +83,35 @@ on_client_unsubscribe(ClientId, Topics, _Env) ->
     io:format("client ~s unsubscribe ~p~n", [ClientId, Topics]),
     Topics.
 
+
+
+%%-----------message publish start----------------------------------------%%
+
 %% transform message and return
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     Message;
 
 on_message_publish(Message, _Env) ->
-    io:format("publish ~s~n", [emqttd_message:format(Message)]),
+    io:format("published ~s~n", [emqttd_message:format(Message)]),
+    publishMsgArrival(Message),
     Message.
 
-on_message_acked(ClientId, Message, _Env) ->
-    io:format("client ~s acked ~s", [ClientId, emqttd_message:format(Message)]),
-    publishMsgAck(ClientId,Message).
+%%get the msg source and topic details and publish it on a channel with QoS = 1
+publishMsgArrival(#mqtt_message{msgid = MsgId, pktid = PktId, from = From,
+  qos = QoS, retain = Retain, dup = Dup, topic =Topic, payload = Payload, timestamp = Timestamp}) ->
+  io:format("entered publishMsgArrival ~n"),
+  publishMessageStates(From,"SYSTEM/message",Payload).
 
+%%-----------message publish end----------------------------------------%%
+
+
+
+
+%%-----------acknowledgement publish start----------------------------------------%%
+
+on_message_acked(ClientId, Message, _Env) ->
+    io:format("client ~s acked ~s ~n", [ClientId, emqttd_message:format(Message)]),
+    publishMsgAck(ClientId,Message).
 
 %%get the msg source and topic details and publish it on a channel with QoS = 1
 publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
@@ -115,29 +132,32 @@ publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
       {topic,Topic}
     ]),
 
-    case From of
-      <<"broker">> ->
-        io:format("publish from broker");
-      _ ->
+    if ProductId =/= undefined, MessageId =/= undefined ->
 
-        if ProductId =/= undefined, MessageId =/= undefined ->
+      publishMessageStates(From,"SYSTEM/msgack",list_to_binary(Json));
 
-          %%build emqttd message with Qos = 1 and then publish
-          Msg = emqttd_message:make(<<"broker">>, 1, list_to_binary("SYSTEM/msgack"), list_to_binary(Json)),
-          emqttd_pubsub:publish(Msg);
-
-          true ->
-            io:format(" product id or message id not defined ")
-
-        end,
-
-        io:format("publish not from broker")
+      true ->
+      io:format(" product id or message id not defined ~n")
 
     end
 
   catch
-    _:_ -> io:fwrite("not json")
+    _:_ -> io:fwrite("not json ~n")
   end.
+
+%%-----------acknowledgement publish end----------------------------------------%%
+
+
+
+publishMessageStates(From,Topic,Payload)->
+  if From =/= <<"broker">>
+    ->
+    Msg = emqttd_message:make(<<"broker">>, 1, list_to_binary(Topic), Payload),
+    emqttd_pubsub:publish(Msg);
+    true ->
+      io:format("publishMsgArrival from broker ~n")
+  end.
+
 
 %% Called when the plugin application stop
 onunload() ->
