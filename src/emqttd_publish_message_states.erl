@@ -64,12 +64,40 @@ onload(Env) ->
                        {?MODULE, on_message_acked, [Env]}).
 
 
+%%-----------client connect start----------------------------------------%%
 
 on_client_connected(ConnAck, _Client = #mqtt_client{client_id = ClientId}, _Env) ->
-    io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]).
+    io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
+
+    %% build json to send using ClientId
+    Json = mochijson2:encode([
+      {client_id, ClientId}
+    ]),
+
+  publishMessageStates(ClientId,"SYSTEM/presence/connected",list_to_binary(Json)).
+
+%%-----------client connect end----------------------------------------%%
+
+
+
+%%-----------client disconnect start----------------------------------------%%
 
 on_client_disconnected(Reason, ClientId, _Env) ->
-    io:format("client ~s disconnected, reason: ~w~n", [ClientId, Reason]).
+    io:format("client ~s disconnected, reason: ~w~n", [ClientId, Reason]),
+
+      %% build json to send using ClientId
+      Json = mochijson2:encode([
+        {client_id, ClientId},
+        {reason, Reason}
+      ]),
+
+  publishMessageStates(ClientId,"SYSTEM/presence/disconnected",list_to_binary(Json)).
+
+%%-----------client disconnect end----------------------------------------%%
+
+
+
+%%-----------client subscribed start----------------------------------------%%
 
 %% should retain TopicTable
 on_client_subscribe(ClientId, TopicTable, _Env) ->
@@ -77,11 +105,35 @@ on_client_subscribe(ClientId, TopicTable, _Env) ->
     TopicTable.
    
 on_client_subscribe_after(ClientId, TopicTable, _Env) ->
-    io:format("client ~s subscribed ~p~n", [ClientId, TopicTable]).
-    
+    io:format("client ~s subscribed ~p~n", [ClientId, TopicTable]),
+
+  %% build json to send using ClientId
+  Json = mochijson2:encode([
+    {client_id, ClientId},
+    {topic, TopicTable}
+  ]),
+
+  publishMessageStates(ClientId,"SYSTEM/subscription/subscribed",list_to_binary(Json)).
+
+%%-----------client subscribed end----------------------------------------%%
+
+
+
+%%-----------client unsubscribed start----------------------------------------%%
+
 on_client_unsubscribe(ClientId, Topics, _Env) ->
     io:format("client ~s unsubscribe ~p~n", [ClientId, Topics]),
+
+    %% build json to send using ClientId
+    Json = mochijson2:encode([
+      {client_id, ClientId},
+      {topic, Topics}
+    ]),
+
+    publishMessageStates(ClientId,"SYSTEM/subscription/unsubscribed",list_to_binary(Json)),
     Topics.
+
+%%-----------client unsubscribed end----------------------------------------%%
 
 
 
@@ -103,7 +155,6 @@ publishMsgArrival(#mqtt_message{msgid = MsgId, pktid = PktId, from = From,
   publishMessageStates(From,"SYSTEM/message",Payload).
 
 %%-----------message publish end----------------------------------------%%
-
 
 
 
@@ -149,6 +200,9 @@ publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
 
 
 
+%%--------------------------------------------------- publish method start -------------------------%%
+
+%%publish message on Topic with Payload only if the message is not from broker itself
 publishMessageStates(From,Topic,Payload)->
   if From =/= <<"broker">>
     ->
@@ -157,6 +211,8 @@ publishMessageStates(From,Topic,Payload)->
     true ->
       io:format("publishMsgArrival from broker ~n")
   end.
+
+%%----------- publish method end ----------------------------------------%%
 
 
 %% Called when the plugin application stop
