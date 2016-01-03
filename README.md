@@ -1,3 +1,4 @@
+<pre>
 This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states
 
 Use cases: 
@@ -43,3 +44,4 @@ B = message_id and make sure that A^B(A intersection B) is always unique.
 
 Q.why product_id (isn't message id sufficient) 
 Ans> this is because if you are using this in a company rhen there might exist a possibility that there are many products having same message id, therefore to uniquely identify a message you should send the message as a json with both product_id and message_id.
+</pre>
