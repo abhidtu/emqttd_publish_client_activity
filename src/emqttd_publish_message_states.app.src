@@ -1,12 +1,12 @@
-{application, emqttd_publish_message_states,
+{application, emqttd_publish_client_activity,
  [
-  {description, "emqttd_publish_message_states"},
+  {description, "emqttd_publish_client_activity"},
   {vsn, "0.0.1"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib
                  ]},
-  {mod, { emqttd_publish_message_states_app, []}},
+  {mod, { emqttd_publish_client_activity_app, []}},
   {env, []}
  ]}.

@@ -1,4 +1,4 @@
--module(emqttd_publish_message_states_sup).
+-module(emqttd_publish_client_activity_sup).
 
 -behaviour(supervisor).
 

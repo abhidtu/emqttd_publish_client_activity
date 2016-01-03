@@ -1,4 +1,4 @@
--module(emqttd_publish_message_states_app).
+-module(emqttd_publish_client_activity_app).
 
 -behaviour(application).
 
@@ -10,10 +10,10 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    {ok, Sup} = emqttd_publish_message_states_sup:start_link(),
+    {ok, Sup} = emqttd_publish_client_activity_sup:start_link(),
     Env = application:get_all_env(),
-    emqttd_publish_message_states:onload(Env),
+    emqttd_publish_client_activity:onload(Env),
     {ok, Sup}.
 
 stop(_State) ->
-    emqttd_publish_message_states:onunload().
+    emqttd_publish_client_activity:onunload().
