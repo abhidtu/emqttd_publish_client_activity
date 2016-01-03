@@ -6,7 +6,7 @@ This plugin in genral enhances the ability of a pub-sub system as it keeps on pu
 
 
 ## Use cases: 
-## publish messages on to
+# publish messages on to
 
 1> "SYSTEM/presence/connected" whene a client connects broker,
 
