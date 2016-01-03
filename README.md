@@ -107,3 +107,6 @@ Whenever a client publishes a new message on a channel with payload serialized j
 
 ##Goals:</br>
 Integration with kafka, configurable option to publish these messages to kafka rather than to emqttd.
+
+##Important:</br>
+ make sure you dont have any client_id with "broker" since it is reserved for emqtt broker in this plugin.
