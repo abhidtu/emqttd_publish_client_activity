@@ -1,3 +1,5 @@
+emqttd_publish_message_states
+
 This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states:
 
 This plugin in genral enhances the ability of a pub-sub system as it keeps on publishing messages or send to kafka on specific channels on various events like connect/disconnect/messageAck etc so that you can easily perform action on these events in any language just by having MQTT or kafka clients (example async task like storing these events in a database).
@@ -78,7 +80,7 @@ Whenever a client connects, it publishes a message to this channel with payload 
 Whenever a client subscribes to a chennel, it publishes a message to this channel with payload (serialized json):
 
 {
-	"client_id":"which client id subscribed"
+	"client_id":"which client id subscribed",
 	"topic":"topic to which it subscribed"
 }
 
@@ -87,7 +89,7 @@ Whenever a client subscribes to a chennel, it publishes a message to this channe
 Whenever a client unsubscribes a channel, it publishes a message to this channel with payload (serialized json):
 
 {
-	"client_id":"which client id unsubscribed"
+	"client_id":"which client id unsubscribed",
 	"topic":"topic to which it unsubscribed"
 }
 
