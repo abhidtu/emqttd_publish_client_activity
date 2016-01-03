@@ -1,13 +1,10 @@
 This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states:
 
-This plugin in genral enhances the ability of a pub sub system
+This plugin in genral enhances the ability of a pub-sub system as it keeps on publishing messages or send to kafka on specific channels on various events like connect/disconnect/messageAck etc so that you can easily perform action on these events in any language just by having MQTT or kafka clients (example async task like storing these events in a database).
 
 
-This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states
->>>>>>> bcce42dca2a3de3a8fa45f5efd450fbe57b33d39
-
-Use cases: 
-publish messages on to
+## Use cases: 
+## publish messages on to
 
 1> "SYSTEM/presence/connected" whene a client connects broker,
 
@@ -19,15 +16,16 @@ publish messages on to
 
 5> "SYSTEM/message" when a client publishes a message to a channel,
 
-6> "SYSTEM/msgack" when a client acknowledges a messages
+6> "SYSTEM/msgack" when a client acknowledges a messages (Very useful)
+
 
 with a configurable QoS value
 
 The data published on above events can be used to track message and client's activity in realtime.
 
-Details about each channel:
+## Details about message published on each channel:
 
-A> "SYSTEM/msgack"
+## A> "SYSTEM/msgack"
 
 A new message is published to "SYSTEM/msgack" whenever a client acknowledges a new message
 the published payload is a following json string :
@@ -57,9 +55,9 @@ B = message_id and make sure that A^B(A intersection B) is always unique.
 
 Q.why product_id (isn't message id sufficient) 
 Ans> this is because if you are using this in a company rhen there might exist a possibility that there are many products having same message id, therefore to uniquely identify a message you should send the message as a json with both product_id and message_id.
-<<<<<<< HEAD
 
-B> "SYSTEM/presence/connected"
+
+## B> "SYSTEM/presence/connected"
 
 Whenever a client connects it publishes a message to this channel with payload (serialized json):
 
@@ -67,7 +65,7 @@ Whenever a client connects it publishes a message to this channel with payload (
 	"client_id":"which client id connected"
 }
 
-C> "SYSTEM/presence/disconnected"
+## C> "SYSTEM/presence/disconnected"
 
 Whenever a client connects, it publishes a message to this channel with payload (serialized json):
 
@@ -75,7 +73,7 @@ Whenever a client connects, it publishes a message to this channel with payload 
 	"client_id":"which client id disconnected"
 }
 
-D> "SYSTEM/subscription/subscribed"
+## D> "SYSTEM/subscription/subscribed"
  
 Whenever a client subscribes to a chennel, it publishes a message to this channel with payload (serialized json):
 
@@ -84,7 +82,7 @@ Whenever a client subscribes to a chennel, it publishes a message to this channe
 	"topic":"topic to which it subscribed"
 }
 
-E> "SYSTEM/subscription/unsubscribed"
+## E> "SYSTEM/subscription/unsubscribed"
 
 Whenever a client unsubscribes a channel, it publishes a message to this channel with payload (serialized json):
 
@@ -93,7 +91,7 @@ Whenever a client unsubscribes a channel, it publishes a message to this channel
 	"topic":"topic to which it unsubscribed"
 }
 
-F> "SYSTEM/message"
+## F> "SYSTEM/message"
 
 Whenever a client publishes a new message on a channel with payload serialized json):
 
@@ -103,4 +101,6 @@ Whenever a client publishes a new message on a channel with payload serialized j
 	"payload":"message payload",
 	"qos":2
 } 
+
+
 
