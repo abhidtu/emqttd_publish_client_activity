@@ -69,7 +69,7 @@ Whenever a client connects it publishes a message to this channel with payload (
 
 ## C> "SYSTEM/presence/disconnected"
 
-Whenever a client disconnewhent publishes a message to this channel with payload (serialized json):
+Whenever a client disconnects it publishes a message to this channel with payload (serialized json):
 
 {</br>
 	"client_id":"which client id disconnected",</br>
