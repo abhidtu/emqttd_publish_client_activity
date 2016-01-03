@@ -72,7 +72,8 @@ Whenever a client connects it publishes a message to this channel with payload (
 Whenever a client connects, it publishes a message to this channel with payload (serialized json):
 
 {</br>
-	"client_id":"which client id disconnected"</br>
+	"client_id":"which client id disconnected",</br>
+	"reason":"reason why it got disconnected"
 }
 
 ## D> "SYSTEM/subscription/subscribed"
