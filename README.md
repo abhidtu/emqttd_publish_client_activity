@@ -1,6 +1,6 @@
 ##emqttd_publish_client_activity
 
-This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states:
+This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable mqtt cliet's activity using emqttd broker.
 
 This plugin in genral enhances the ability of a pub-sub system as it keeps on publishing messages or send to kafka on specific channels on various events like connect/disconnect/messageAck etc so that you can easily perform action on these events in any language just by having MQTT or kafka clients (example async task like storing these events in a database).
 
