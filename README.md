@@ -1,4 +1,4 @@
-##emqttd_publish_message_states
+##emqttd_publish_client_activity
 
 This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states:
 
