@@ -40,7 +40,7 @@ the published payload is a following json string :
 	"topic":"topic this message was published on"</br>
 }
 
-All the above parameters can then be utilized to which clientId acknowledged which unique message published.
+All the above parameters can then be utilized to figure out which clientId acknowledged which uniquely published message.
 
 NOTE: you will  get acknowledgement on "SYSTEM/msgack" only if you publish your payload as serialized json with following mandatory keys:
 
@@ -55,8 +55,8 @@ If you are interesting in getting the acknowledgement then while publishing the 
 A = product_id and</br>
 B = message_id and make sure that A^B(A intersection B) is always unique.
 
-Q.why product_id (isn't message id sufficient) </br>
-Ans> this is because if you are using this in a company rhen there might exist a possibility that there are many products having same message id, therefore to uniquely identify a message you should send the message as a json with both product_id and message_id.
+Q.why product_id (isn't just message_id sufficient) </br>
+Ans> this is because if you are using this in a company then there might exist a possibility that there are many products having same message_id, therefore to uniquely identify a message you should send the message as a json with both product_id and message_id.
 
 
 ## B> "SYSTEM/presence/connected"
