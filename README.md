@@ -2,6 +2,10 @@ This is a work in progress relating to publish/(send to a messaging system eg: k
 
 This plugin in genral enhances the ability of a pub sub system
 
+
+This is a work in progress relating to publish/(send to a messaging system eg: kafka) selectable emqttd message states
+>>>>>>> bcce42dca2a3de3a8fa45f5efd450fbe57b33d39
+
 Use cases: 
 publish messages on to
 
@@ -53,6 +57,7 @@ B = message_id and make sure that A^B(A intersection B) is always unique.
 
 Q.why product_id (isn't message id sufficient) 
 Ans> this is because if you are using this in a company rhen there might exist a possibility that there are many products having same message id, therefore to uniquely identify a message you should send the message as a json with both product_id and message_id.
+<<<<<<< HEAD
 
 B> "SYSTEM/presence/connected"
 
@@ -98,5 +103,4 @@ Whenever a client publishes a new message on a channel with payload serialized j
 	"payload":"message payload",
 	"qos":2
 } 
-
 
