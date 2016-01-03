@@ -69,7 +69,7 @@ Whenever a client connects it publishes a message to this channel with payload (
 
 ## C> "SYSTEM/presence/disconnected"
 
-Whenever a client connects, it publishes a message to this channel with payload (serialized json):
+Whenever a cltopics.isconnects, it publishes a message to this channel with payload (serialized json):
 
 {</br>
 	"client_id":"which client id disconnected",</br>
@@ -106,7 +106,7 @@ Whenever a client publishes a new message on a channel with payload serialized j
 } 
 
 ##Goals:</br>
-Integration with kafka, configurable option to publish these messages to kafka rather than to emqttd.
+Integration with kafka, configurable option to publish these messages to kafka/mqtt SYSTEM/# topics
 
 ##Important:</br>
  make sure you dont have any client_id with "broker" since it is reserved for emqtt broker in this plugin.
