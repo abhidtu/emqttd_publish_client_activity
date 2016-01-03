@@ -64,7 +64,7 @@ onload(Env) ->
                        {?MODULE, on_message_acked, [Env]}).
 
 
-%%-----------client connect start----------------------------------------%%
+%%-----------client connect start-----------------------------------%%
 
 on_client_connected(ConnAck, _Client = #mqtt_client{client_id = ClientId}, _Env) ->
     io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
@@ -76,11 +76,11 @@ on_client_connected(ConnAck, _Client = #mqtt_client{client_id = ClientId}, _Env)
 
   publishMessageStates(ClientId,"SYSTEM/presence/connected",list_to_binary(Json)).
 
-%%-----------client connect end----------------------------------------%%
+%%-----------client connect end-------------------------------------%%
 
 
 
-%%-----------client disconnect start----------------------------------------%%
+%%-----------client disconnect start---------------------------------%%
 
 on_client_disconnected(Reason, ClientId, _Env) ->
     io:format("client ~s disconnected, reason: ~w~n", [ClientId, Reason]),
@@ -93,11 +93,11 @@ on_client_disconnected(Reason, ClientId, _Env) ->
 
   publishMessageStates(ClientId,"SYSTEM/presence/disconnected",list_to_binary(Json)).
 
-%%-----------client disconnect end----------------------------------------%%
+%%-----------client disconnect end-----------------------------------%%
 
 
 
-%%-----------client subscribed start----------------------------------------%%
+%%-----------client subscribed start---------------------------------------%%
 
 %% should retain TopicTable
 on_client_subscribe(ClientId, TopicTable, _Env) ->
@@ -137,7 +137,7 @@ on_client_unsubscribe(ClientId, Topics, _Env) ->
 
 
 
-%%-----------message publish start----------------------------------------%%
+%%-----------message publish start--------------------------------------%%
 
 %% transform message and return
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
@@ -152,13 +152,22 @@ on_message_publish(Message, _Env) ->
 publishMsgArrival(#mqtt_message{msgid = MsgId, pktid = PktId, from = From,
   qos = QoS, retain = Retain, dup = Dup, topic =Topic, payload = Payload, timestamp = Timestamp}) ->
   io:format("entered publishMsgArrival ~n"),
-  publishMessageStates(From,"SYSTEM/message",Payload).
+
+  %% build json to send using ClientId
+  Json = mochijson2:encode([
+    {pub_client_id, From},
+    {topic, Topic},
+    {payload, Payload},
+    {qos, QoS}
+  ]),
+
+  publishMessageStates(From,"SYSTEM/message",list_to_binary(Json)).
 
 %%-----------message publish end----------------------------------------%%
 
 
 
-%%-----------acknowledgement publish start----------------------------------------%%
+%%-----------acknowledgement publish start----------------------------%%
 
 on_message_acked(ClientId, Message, _Env) ->
     io:format("client ~s acked ~s ~n", [ClientId, emqttd_message:format(Message)]),
@@ -196,11 +205,11 @@ publishMsgAck(ClientId, #mqtt_message{msgid = MsgId, pktid = PktId, from = From,
     _:_ -> io:fwrite("not json ~n")
   end.
 
-%%-----------acknowledgement publish end----------------------------------------%%
+%%-----------acknowledgement publish end----------------------------------%%
 
 
 
-%%--------------------------------------------------- publish method start -------------------------%%
+%%----------- publish method start ---------------------------------------%%
 
 %%publish message on Topic with Payload only if the message is not from broker itself
 publishMessageStates(From,Topic,Payload)->
