@@ -104,5 +104,5 @@ Whenever a client publishes a new message on a channel with payload serialized j
 	"qos":2
 } 
 
-Goals:</br>
+##Goals:</br>
 Integration with kafka, configurable option to publish these messages to kafka rather than to emqttd.
