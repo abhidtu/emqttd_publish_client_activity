@@ -21,7 +21,7 @@ This plugin in genral enhances the ability of a pub-sub system as it keeps on pu
 6> "SYSTEM/msgack" when a client acknowledges a messages (Very useful)
 
 
-with a configurable QoS value
+with a configurable QoS value (in progres)
 
 The data published on above events can be used to track message and client's activity in realtime.
 
