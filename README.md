@@ -8,9 +8,9 @@ This plugin in genral enhances the ability of a pub-sub system as it keeps on pu
 ## Use cases: 
 ## publish messages on to
 
-1> "SYSTEM/presence/connected" whene a client connects broker,
+1> "SYSTEM/presence/connected" when a client connects broker,
 
-2> "SYSTEM/presence/disconnected" whene a client connects broker,
+2> "SYSTEM/presence/disconnected" when a client connects broker,
 
 3> "SYSTEM/subscription/subscribed" when a client subscribes to a channel,
 
@@ -69,7 +69,7 @@ Whenever a client connects it publishes a message to this channel with payload (
 
 ## C> "SYSTEM/presence/disconnected"
 
-Whenever a cltopics.isconnects, it publishes a message to this channel with payload (serialized json):
+Whenever a client disconnewhent publishes a message to this channel with payload (serialized json):
 
 {</br>
 	"client_id":"which client id disconnected",</br>
