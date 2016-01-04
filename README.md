@@ -1,6 +1,6 @@
 ##emqttd_publish_client_activity
 
-This is a work in progress relating to publishing messages on mqtt or Kafka topics relating to mqtt cliet's realtime activity using emqttd broker.
+This is a work in progress relating to publishing messages on mqtt or Kafka topics relating to mqtt client's realtime activity using emqttd broker.
 
 This plugin in genral enhances the ability of a pub-sub system as it keeps on publishing messages to mqtt or kafka topics on various events whenever a client connects/disconnects/publishes/acknowledges a message/subscribes to a topic/unsubscribe to a topic, so that you can easily perform action on these events in any programming language just by having MQTT or kafka clients in your project subscribed to below mentioned SYSTEM/# channels to get messages (example async tasks like storing these events in a database).
 
