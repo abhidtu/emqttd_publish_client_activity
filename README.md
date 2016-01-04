@@ -73,25 +73,25 @@ Whenever a client disconnects it publishes a message to this channel with payloa
 
 {</br>
 	"client_id":"which client id disconnected",</br>
-	"reason":"reason why it got disconnected"
+	"reason":"reason why it got disconnected"</br>
 }
 
 ## D> "SYSTEM/subscription/subscribed"
  
 Whenever a client subscribes to a chennel, it publishes a message to this channel with payload (serialized json):
-
-{</br>
-	"client_id":"which client id subscribed",</br>
+<pre>
+{
+	"client_id":"which client id subscribed",
 	"topic":"topic to which it subscribed"
 }
-
+</pre>
 ## E> "SYSTEM/subscription/unsubscribed"
 
 Whenever a client unsubscribes a channel, it publishes a message to this channel with payload (serialized json):
 
 {</br>
 	"client_id":"which client id unsubscribed",</br>
-	"topic":"topic to which it unsubscribed"
+	"topic":"topic to which it unsubscribed"</br>
 }
 
 ## F> "SYSTEM/message"
@@ -102,7 +102,7 @@ Whenever a client publishes a new message on a channel with payload serialized j
 	"pub_client_id":"client id of publisher",</br>
 	"topic":"topic on which message is published",</br>
 	"payload":"message payload",</br>
-	"qos":2
+	"qos":"qos with which message was sent"</br>
 } 
 
 ##Goals:</br>
