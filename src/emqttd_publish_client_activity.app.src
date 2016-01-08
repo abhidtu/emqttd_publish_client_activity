@@ -5,7 +5,8 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  ekaf
                  ]},
   {mod, { emqttd_publish_client_activity_app, []}},
   {env, []}
