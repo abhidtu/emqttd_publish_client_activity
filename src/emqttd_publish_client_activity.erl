@@ -111,10 +111,12 @@ on_client_subscribe(ClientId, TopicTable, _Env) ->
 on_client_subscribe_after(ClientId, TopicTable, _Env) ->
     io:format("client ~s subscribed ~p~n", [ClientId, TopicTable]),
 
+    Key = proplists:get_keys(TopicTable),
+
   %% build json to send using ClientId
   Json = mochijson2:encode([
     {client_id, ClientId},
-    {topic, TopicTable},
+    {topic, lists:last(Key)},
     {cluster_node, node()},
     {epoch_timestamp, now_to_seconds(now())}
   ]),
@@ -133,7 +135,7 @@ on_client_unsubscribe(ClientId, Topics, _Env) ->
     %% build json to send using ClientId
     Json = mochijson2:encode([
       {client_id, ClientId},
-      {topic, Topics},
+      {topic, lists:last(Topics)},
       {cluster_node, node()},
       {epoch_timestamp, now_to_seconds(now())}
     ]),
